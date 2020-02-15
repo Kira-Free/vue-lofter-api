@@ -15,10 +15,7 @@ router.get('/', function(req, res, next) {
 //获取首页渲染信息
 router.get('/axios/news',function(req,res,next){
   let index=req.query.index
-  let code =req.query.code
-  console.log(code)
-  console.log(index)
-  let sqlStr=`select * from news limit ${index}`
+  let sqlStr=`select * from news limit ${index-1}, ${index}`
   db.query(sqlStr,(err,data)=>{
     if(err){
       console.log(err);
@@ -29,20 +26,11 @@ router.get('/axios/news',function(req,res,next){
       // console.log(data);
       // console.log([data[index-1]]);
       if(!data[0]){
-        res.json({error_code:0,message:'无数据'})
-        return
-      }
-      if(!data[index-1]){
         res.json({error_code:0,message:'已无更多'})
         return
       }
-      if(code==1){
-        console.log(data);
-        res.json({success_code:200,message:data})
-        return
-      }
       console.log('查询成功');
-      res.json({success_code:200,message:[data[index-1]]})
+      res.json({success_code:200,message:data})
     }
   })
 })
